@@ -9,6 +9,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import kotlinx.android.synthetic.main.activity_main.*
@@ -22,6 +24,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var notificationManager: NotificationManager
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
+
+    private var objectToDownload: ObjectToDownload? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun download() {
         val request =
-            DownloadManager.Request(Uri.parse(URL))
+            DownloadManager.Request(Uri.parse(objectToDownload?.url))
                 .setTitle(getString(R.string.app_name))
                 .setDescription(getString(R.string.app_description))
                 .setRequiresCharging(false)
@@ -55,10 +59,36 @@ class MainActivity : AppCompatActivity() {
             downloadManager.enqueue(request)// enqueue puts the download request in the queue.
     }
 
+    fun onRadioButtonCLicked(view: View) {
+        if (view is RadioButton) {
+            // Is the button now checked?
+            val checked = view.isChecked
+
+            // Check which radio button was clicked
+            when (view.id) {
+                R.id.radio_glide ->
+                    if (checked) {
+                        objectToDownload = ObjectToDownload.GLIDE
+                    }
+                R.id.radio_project ->
+                    if (checked) {
+                        objectToDownload = ObjectToDownload.UDACITY_PROJECT
+                    }
+                R.id.radio_retrofit ->
+                    if (checked) {
+                        objectToDownload = ObjectToDownload.RETROFIT
+                    }
+            }
+        }
+    }
+
     companion object {
-        private const val URL =
-            "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
         private const val CHANNEL_ID = "channelId"
     }
 
+    enum class ObjectToDownload(val url: String) {
+        GLIDE("https://github.com/bumptech/glide/archive/refs/heads/master.zip"),
+        UDACITY_PROJECT("https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"),
+        RETROFIT("https://github.com/square/retrofit/archive/refs/heads/master.zip");
+    }
 }
