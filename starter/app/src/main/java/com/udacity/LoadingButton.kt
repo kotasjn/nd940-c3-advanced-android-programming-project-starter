@@ -20,7 +20,10 @@ class LoadingButton @JvmOverloads constructor(
 
     private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { p, old, new ->
         when (old) {
-            ButtonState.Clicked -> createClickAnimation()
+            ButtonState.Clicked -> {
+                if (old == ButtonState.Loading) return@observable
+                createClickAnimation()
+            }
             ButtonState.Loading -> createLoadingAnimation()
             ButtonState.Completed -> createCompletedAnimation()
         }
@@ -29,27 +32,37 @@ class LoadingButton @JvmOverloads constructor(
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
         textAlign = Paint.Align.CENTER
-        textSize = 55.0f
         typeface = Typeface.create("", Typeface.BOLD)
     }
 
-    private var textSize = 20
+    private var text = resources.getString(R.string.button_name)
+    private var textSize = resources.getDimension(R.dimen.default_text_size)
     private var textColor = resources.getColor(R.color.white, context.theme)
     private var buttonColor = resources.getColor(R.color.colorPrimary, context.theme)
 
     init {
         isClickable = true
         context.withStyledAttributes(attrs, R.styleable.LoadingButton) {
-            textSize = getColor(R.styleable.LoadingButton_android_textSize, textSize)
+            textSize = getFloat(R.styleable.LoadingButton_android_textSize, textSize)
             textColor = getColor(R.styleable.LoadingButton_android_textColor, textColor)
             buttonColor = getColor(R.styleable.LoadingButton_android_textColor, buttonColor)
         }
     }
 
+    override fun performClick(): Boolean {
+        if (super.performClick()) return true
+
+        //
+
+        return true
+    }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
+        canvas?.let {
+            setBackgroundColor(buttonColor)
+        }
 
 
     }
