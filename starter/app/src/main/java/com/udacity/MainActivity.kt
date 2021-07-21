@@ -37,14 +37,27 @@ class MainActivity : AppCompatActivity() {
 
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
-        binding.customButton.setOnClickListener {
-            download()
-        }
+        binding.customButton.setOnClickListener { download() }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterReceiver(receiver)
     }
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            if (downloadID == id) {
+                val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                val cursor = downloadManager.query(DownloadManager.Query())
+                if (cursor.moveToFirst()) {
+                    val title = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
+                    val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                    pushNotification(title, status == DownloadManager.STATUS_SUCCESSFUL)
+                }
+                binding.customButton.downloadComplete()
+            }
         }
     }
 
@@ -52,6 +65,7 @@ class MainActivity : AppCompatActivity() {
         if (objectToDownload == null) {
             Toast.makeText(this, R.string.select_file_error, Toast.LENGTH_LONG).show()
         } else {
+            binding.customButton.buttonClicked()
             val request =
                 DownloadManager.Request(Uri.parse(objectToDownload?.url))
                     .setTitle(getString(R.string.app_name))
@@ -64,6 +78,10 @@ class MainActivity : AppCompatActivity() {
             downloadID =
                 downloadManager.enqueue(request)// enqueue puts the download request in the queue.
         }
+    }
+
+    private fun pushNotification(title: String, success: Boolean) {
+        Toast.makeText(this, "$title : $success", Toast.LENGTH_LONG).show()
     }
 
     fun onRadioButtonCLicked(view: View) {

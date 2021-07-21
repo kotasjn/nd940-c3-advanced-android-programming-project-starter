@@ -2,11 +2,12 @@ package com.udacity
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Typeface
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.DecelerateInterpolator
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import androidx.core.content.withStyledAttributes
 import kotlin.properties.Delegates
 
@@ -16,45 +17,42 @@ class LoadingButton @JvmOverloads constructor(
     private var widthSize = 0
     private var heightSize = 0
 
-    private val valueAnimator = ValueAnimator()
+    private var loadingAnimator = ValueAnimator()
 
-    private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { p, old, new ->
-        when (old) {
-            ButtonState.Clicked -> {
-                if (old == ButtonState.Loading) return@observable
-                createClickAnimation()
-            }
-            ButtonState.Loading -> createLoadingAnimation()
-            ButtonState.Completed -> createCompletedAnimation()
+    private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { _, _, new ->
+        when (new) {
+            ButtonState.Clicked -> onClick()
+            ButtonState.Loading -> onLoading()
+            ButtonState.Completed -> onComplete()
         }
     }
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
         textAlign = Paint.Align.CENTER
+        textSize = resources.getDimension(R.dimen.default_button_text_size)
         typeface = Typeface.create("", Typeface.BOLD)
     }
 
+    private var textRect = Rect()
+    private var arcRect = RectF()
+    private var progressValue: Float = 0f
     private var text = resources.getString(R.string.button_name)
-    private var textSize = resources.getDimension(R.dimen.default_text_size)
+
     private var textColor = resources.getColor(R.color.white, context.theme)
     private var buttonColor = resources.getColor(R.color.colorPrimary, context.theme)
+    private var arcLoadingColor = resources.getColor(R.color.colorAccent, context.theme)
+    private var buttonLoadingColor = resources.getColor(R.color.colorPrimaryDark, context.theme)
 
     init {
         isClickable = true
         context.withStyledAttributes(attrs, R.styleable.LoadingButton) {
-            textSize = getFloat(R.styleable.LoadingButton_android_textSize, textSize)
             textColor = getColor(R.styleable.LoadingButton_android_textColor, textColor)
-            buttonColor = getColor(R.styleable.LoadingButton_android_textColor, buttonColor)
+            buttonColor = getColor(R.styleable.LoadingButton_buttonColor, buttonColor)
+            arcLoadingColor = getColor(R.styleable.LoadingButton_arcLoadingColor, arcLoadingColor)
+            buttonLoadingColor =
+                getColor(R.styleable.LoadingButton_buttonLoadingColor, buttonLoadingColor)
         }
-    }
-
-    override fun performClick(): Boolean {
-        if (super.performClick()) return true
-
-        //
-
-        return true
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -62,9 +60,13 @@ class LoadingButton @JvmOverloads constructor(
 
         canvas?.let {
             setBackgroundColor(buttonColor)
+
+            if (buttonState == ButtonState.Loading) {
+                drawLoadingRect(it)
+                drawLoadingCircle(it)
+            }
+            drawText(it)
         }
-
-
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -78,17 +80,72 @@ class LoadingButton @JvmOverloads constructor(
         widthSize = width
         heightSize = height
         setMeasuredDimension(width, height)
+
+        arcRect.apply {
+            top = 15f
+            bottom = heightSize - 15f
+            left = widthSize - bottom
+            right = widthSize - 15f
+        }
     }
 
-    private fun createClickAnimation() {
-
+    private fun drawLoadingRect(canvas: Canvas) {
+        paint.color = buttonLoadingColor
+        canvas.drawRect(0f, 0f, progressValue / 100f * widthSize, heightSize.toFloat(), paint)
     }
 
-    private fun createLoadingAnimation() {
-
+    private fun drawLoadingCircle(canvas: Canvas) {
+        paint.color = arcLoadingColor
+        canvas.drawArc(arcRect, 0f, progressValue / 100f * 360f, true, paint)
     }
 
-    private fun createCompletedAnimation() {
+    private fun drawText(canvas: Canvas) {
+        paint.color = textColor
+        paint.getTextBounds(text, 0, text.length, textRect)
+        val centerPosition = measuredHeight.toFloat() / 2 - textRect.centerY()
+        canvas.drawText(text, widthSize / 2f, centerPosition, paint)
+    }
 
+    private fun onClick() {
+        isEnabled = false
+        buttonState = ButtonState.Loading
+    }
+
+    private fun onLoading() {
+        loadingAnimator = ValueAnimator.ofFloat(0f, 100f).apply {
+            addUpdateListener {
+                progressValue = animatedValue as Float
+                invalidate()
+            }
+            duration = 10000
+            interpolator = DecelerateInterpolator()
+            doOnStart {
+                text = resources.getString(R.string.button_loading)
+            }
+            start()
+        }
+    }
+
+    private fun onComplete() {
+        isEnabled = true
+        text = resources.getString(R.string.button_name)
+    }
+
+    fun buttonClicked() {
+        buttonState = ButtonState.Clicked
+    }
+
+    fun downloadComplete() {
+        progressValue = 0f
+        val animatedFraction = loadingAnimator.animatedFraction
+        loadingAnimator.apply {
+            cancel()
+            setCurrentFraction(animatedFraction)
+            duration = 500
+            start()
+            doOnEnd {
+                buttonState = ButtonState.Completed
+            }
+        }
     }
 }
