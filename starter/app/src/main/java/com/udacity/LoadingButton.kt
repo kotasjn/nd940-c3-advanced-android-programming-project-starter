@@ -18,6 +18,7 @@ class LoadingButton @JvmOverloads constructor(
     private var heightSize = 0
 
     private var loadingAnimator = ValueAnimator()
+    private var downloaded = false
 
     private var buttonState: ButtonState by Delegates.observable(ButtonState.Completed) { _, _, new ->
         when (new) {
@@ -115,10 +116,11 @@ class LoadingButton @JvmOverloads constructor(
         loadingAnimator = ValueAnimator.ofFloat(0f, 100f).apply {
             addUpdateListener {
                 progressValue = animatedValue as Float
+                if (progressValue >= 99.5f && !downloaded) pause()
                 invalidate()
             }
             duration = 10000
-            interpolator = DecelerateInterpolator()
+            interpolator = DecelerateInterpolator(1.5f)
             doOnStart {
                 text = resources.getString(R.string.button_loading)
             }
@@ -132,17 +134,23 @@ class LoadingButton @JvmOverloads constructor(
     }
 
     fun buttonClicked() {
+        downloaded = false
         buttonState = ButtonState.Clicked
     }
 
     fun downloadComplete() {
+        downloaded = true
         progressValue = 0f
         val animatedFraction = loadingAnimator.animatedFraction
         loadingAnimator.apply {
-            cancel()
-            setCurrentFraction(animatedFraction)
-            duration = 500
-            start()
+            if (isPaused) {
+                resume()
+            } else {
+                cancel()
+                setCurrentFraction(animatedFraction)
+                duration = 1000
+                start()
+            }
             doOnEnd {
                 buttonState = ButtonState.Completed
             }
