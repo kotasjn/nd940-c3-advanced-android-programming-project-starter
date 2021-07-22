@@ -2,7 +2,6 @@ package com.udacity
 
 import android.app.DownloadManager
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,10 +12,9 @@ import android.view.View
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.udacity.databinding.ActivityMainBinding
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,25 +23,8 @@ class MainActivity : AppCompatActivity() {
     private var downloadID: Long = 0
 
     private lateinit var notificationManager: NotificationManager
-    private lateinit var pendingIntent: PendingIntent
-    private lateinit var action: NotificationCompat.Action
 
     private var objectToDownload: ObjectToDownload? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        setSupportActionBar(binding.toolbar)
-
-        registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-
-        binding.customButton.setOnClickListener { download() }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        unregisterReceiver(receiver)
-    }
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -61,6 +42,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        setSupportActionBar(binding.toolbar)
+
+        notificationManager = ContextCompat.getSystemService(
+            this,
+            NotificationManager::class.java
+        ) as NotificationManager
+
+        notificationManager.createNotificationChannel(
+            getString(R.string.notification_download_channel_id),
+            getString(R.string.notification_download_channel_name)
+        )
+
+        registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+
+        binding.customButton.setOnClickListener { download() }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unregisterReceiver(receiver)
+    }
+
     private fun download() {
         if (objectToDownload == null) {
             Toast.makeText(this, R.string.select_file_error, Toast.LENGTH_LONG).show()
@@ -75,13 +81,23 @@ class MainActivity : AppCompatActivity() {
                     .setAllowedOverRoaming(true)
 
             val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-            downloadID =
-                downloadManager.enqueue(request)// enqueue puts the download request in the queue.
+            downloadID = downloadManager.enqueue(request)
         }
     }
 
     private fun pushNotification(title: String, success: Boolean) {
-        Toast.makeText(this, "$title : $success", Toast.LENGTH_LONG).show()
+        notificationManager.cancelNotifications()
+        val contentIntent = Intent(this, DetailActivity::class.java)
+        contentIntent.apply {
+            putExtra(getString(R.string.intent_file_title), title)
+            putExtra(getString(R.string.intent_success), success)
+            putExtra(getString(R.string.intent_notification_id), NOTIFICATION_DOWNLOAD_ID)
+        }
+        notificationManager.sendNotification(
+            this,
+            contentIntent,
+            getString(R.string.notification_download_channel_id),
+            NOTIFICATION_DOWNLOAD_ID)
     }
 
     fun onRadioButtonCLicked(view: View) {
@@ -108,7 +124,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val CHANNEL_ID = "channelId"
+        private const val NOTIFICATION_DOWNLOAD_ID = 0
     }
 
     enum class ObjectToDownload(val url: String) {

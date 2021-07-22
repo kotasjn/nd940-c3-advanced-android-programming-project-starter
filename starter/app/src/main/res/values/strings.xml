@@ -7,6 +7,14 @@
     <string name="notification_description">The Project 3 repository is downloaded</string>
     <string name="notification_button">See changes</string>
 
+    <string name="notification_download_channel_id" translatable="false">notification_downloads_channel</string>
+    <string name="notification_download_channel_name" translatable="false">Downloads</string>
+    <string name="notification_download_id" translatable="false">notification_download</string>
+
+    <string name="intent_success" translatable="false">success</string>
+    <string name="intent_file_title" translatable="false">file_title</string>
+    <string name="intent_notification_id" translatable="false">notification_id</string>
+
     <string name="button_name">Download</string>
     <string name="button_loading">We are loading </string>
 
