@@ -9,9 +9,6 @@ import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
 
-private val REQUEST_CODE = 0
-private val FLAGS = 0
-
 /**
  * Builds and delivers the notification.
  */
@@ -29,13 +26,6 @@ fun NotificationManager.sendNotification(
         PendingIntent.FLAG_UPDATE_CURRENT
     )
 
-    val checkStatusPendingIntent = PendingIntent.getBroadcast(
-        context,
-        REQUEST_CODE,
-        contentIntent,
-        FLAGS
-    )
-
     val builder = NotificationCompat.Builder(context, channelId)
         .setContentTitle(context.getString(R.string.notification_title))
         .setContentText(context.getString(R.string.notification_description))
@@ -44,7 +34,7 @@ fun NotificationManager.sendNotification(
         .addAction(
             R.drawable.ic_assistant_black_24dp,
             context.getString(R.string.notification_button),
-            checkStatusPendingIntent
+            contentPendingIntent
         )
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setAutoCancel(true)

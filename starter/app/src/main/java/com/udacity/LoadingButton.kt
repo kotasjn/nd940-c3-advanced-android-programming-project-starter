@@ -31,14 +31,14 @@ class LoadingButton @JvmOverloads constructor(
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
         textAlign = Paint.Align.CENTER
-        textSize = resources.getDimension(R.dimen.default_button_text_size)
+        textSize = resources.getDimension(R.dimen.default_text_size)
         typeface = Typeface.create("", Typeface.BOLD)
     }
 
     private var textRect = Rect()
     private var arcRect = RectF()
     private var progressValue: Float = 0f
-    private var text = resources.getString(R.string.button_name)
+    private var text = resources.getString(R.string.button_download_text)
 
     private var textColor = resources.getColor(R.color.white, context.theme)
     private var buttonColor = resources.getColor(R.color.colorPrimary, context.theme)
@@ -116,13 +116,13 @@ class LoadingButton @JvmOverloads constructor(
         loadingAnimator = ValueAnimator.ofFloat(0f, 100f).apply {
             addUpdateListener {
                 progressValue = animatedValue as Float
-                if (progressValue >= 99.5f && !downloaded) pause()
+                if (progressValue >= 99f && !downloaded) pause()
                 invalidate()
             }
-            duration = 10000
-            interpolator = DecelerateInterpolator(1.5f)
+            duration = 15000
+            interpolator = DecelerateInterpolator(1.2f)
             doOnStart {
-                text = resources.getString(R.string.button_loading)
+                text = resources.getString(R.string.button_download_loading_text)
             }
             start()
         }
@@ -130,7 +130,7 @@ class LoadingButton @JvmOverloads constructor(
 
     private fun onComplete() {
         isEnabled = true
-        text = resources.getString(R.string.button_name)
+        text = resources.getString(R.string.button_download_text)
     }
 
     fun buttonClicked() {

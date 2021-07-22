@@ -4,19 +4,19 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:context=".DetailActivity">
 
-	<data>
-
-	</data>
-
-	<androidx.coordinatorlayout.widget.CoordinatorLayout
+	<androidx.constraintlayout.widget.ConstraintLayout
 		android:id="@+id/layout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent">
 
 		<com.google.android.material.appbar.AppBarLayout
+			android:id="@+id/appBarLayout"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:theme="@style/AppTheme.AppBarOverlay">
+			android:theme="@style/AppTheme.AppBarOverlay"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent">
 
 			<androidx.appcompat.widget.Toolbar
 				android:id="@+id/toolbar"
@@ -27,23 +27,76 @@
 
 		</com.google.android.material.appbar.AppBarLayout>
 
-		<androidx.constraintlayout.widget.ConstraintLayout
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
-
-		</androidx.constraintlayout.widget.ConstraintLayout>
-
-		<com.google.android.material.floatingactionbutton.FloatingActionButton
-			android:id="@+id/fab"
-			android:layout_width="wrap_content"
+		<Button
+			android:id="@+id/button"
+			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_gravity="bottom|end"
-			android:layout_margin="@dimen/fab_margin"
-			app:srcCompat="@android:drawable/ic_dialog_email" />
+			android:layout_margin="@dimen/space_16dp"
+			android:background="@color/colorAccent"
+			android:text="@string/button_ok_text"
+			android:textColor="@color/white"
+			android:textSize="@dimen/default_text_size"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent" />
 
-	</androidx.coordinatorlayout.widget.CoordinatorLayout>
+		<TextView
+			android:id="@+id/file_name_label"
+			style="@style/labelText"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/space_16dp"
+			android:layout_marginEnd="@dimen/space_8dp"
+			android:text="@string/file_name_label"
+			app:layout_constraintEnd_toStartOf="@+id/file_name_value"
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="@+id/file_name_value" />
+
+		<TextView
+			android:id="@+id/status_label"
+			style="@style/labelText"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/space_16dp"
+			android:layout_marginEnd="@dimen/space_8dp"
+			android:text="@string/status_label"
+			app:layout_constraintEnd_toStartOf="@+id/status_value"
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="@+id/status_value" />
+
+		<TextView
+			android:id="@+id/file_name_value"
+			style="@style/labelText"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/space_8dp"
+			android:layout_marginTop="@dimen/space_16dp"
+			android:layout_marginEnd="@dimen/space_16dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintStart_toEndOf="@+id/file_name_label"
+			app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+			tools:text="LoadApp - Current repository by Udacity"
+			tools:textColor="@color/success" />
+
+		<TextView
+			android:id="@+id/status_value"
+			style="@style/labelText"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="@dimen/space_8dp"
+			android:layout_marginTop="@dimen/space_16dp"
+			android:layout_marginEnd="@dimen/space_16dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintStart_toEndOf="@+id/status_label"
+			app:layout_constraintTop_toBottomOf="@+id/file_name_value"
+			tools:text="Fail"
+			tools:textColor="@color/failure" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

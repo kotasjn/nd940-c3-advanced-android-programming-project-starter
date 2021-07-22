@@ -33,7 +33,8 @@ class MainActivity : AppCompatActivity() {
                 val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                 val cursor = downloadManager.query(DownloadManager.Query())
                 if (cursor.moveToFirst()) {
-                    val title = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
+                    val title =
+                        cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
                     val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
                     pushNotification(title, status == DownloadManager.STATUS_SUCCESSFUL)
                 }
@@ -62,23 +63,19 @@ class MainActivity : AppCompatActivity() {
         binding.customButton.setOnClickListener { download() }
     }
 
-    override fun onStop() {
-        super.onStop()
-        unregisterReceiver(receiver)
-    }
-
     private fun download() {
         if (objectToDownload == null) {
             Toast.makeText(this, R.string.select_file_error, Toast.LENGTH_LONG).show()
-        } else {
-            binding.customButton.buttonClicked()
-            val request =
-                DownloadManager.Request(Uri.parse(objectToDownload?.url))
-                    .setTitle(getString(R.string.app_name))
-                    .setDescription(getString(R.string.app_description))
-                    .setRequiresCharging(false)
-                    .setAllowedOverMetered(true)
-                    .setAllowedOverRoaming(true)
+            return
+        }
+        binding.customButton.buttonClicked()
+        objectToDownload?.let {
+            val request = DownloadManager.Request(Uri.parse(it.url))
+                .setTitle(getString(it.titleStringResId))
+                .setDescription(getString(R.string.app_description))
+                .setRequiresCharging(false)
+                .setAllowedOverMetered(true)
+                .setAllowedOverRoaming(true)
 
             val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
             downloadID = downloadManager.enqueue(request)
@@ -97,7 +94,8 @@ class MainActivity : AppCompatActivity() {
             this,
             contentIntent,
             getString(R.string.notification_download_channel_id),
-            NOTIFICATION_DOWNLOAD_ID)
+            NOTIFICATION_DOWNLOAD_ID
+        )
     }
 
     fun onRadioButtonCLicked(view: View) {
@@ -127,9 +125,18 @@ class MainActivity : AppCompatActivity() {
         private const val NOTIFICATION_DOWNLOAD_ID = 0
     }
 
-    enum class ObjectToDownload(val url: String) {
-        GLIDE("https://github.com/bumptech/glide/archive/refs/heads/master.zip"),
-        UDACITY_PROJECT("https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"),
-        RETROFIT("https://github.com/square/retrofit/archive/refs/heads/master.zip");
+    enum class ObjectToDownload(val url: String, val titleStringResId: Int) {
+        GLIDE(
+            "https://github.com/bumptech/glide/archive/refs/heads/master.zip",
+            R.string.option_glide
+        ),
+        UDACITY_PROJECT(
+            "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip",
+            R.string.option_project
+        ),
+        RETROFIT(
+            "https://github.com/square/retrofit/archive/refs/heads/master.zip",
+            R.string.option_retrofit
+        );
     }
 }

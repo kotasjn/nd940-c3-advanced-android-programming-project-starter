@@ -1,28 +1,40 @@
 <resources>
-    <string name="app_name">ND940C3-Project</string>
-    <string name="app_description">Download files from Internet</string>
-    <string name="action_settings">Settings</string>
 
-    <string name="notification_title">Udacity: Android Kotlin Nanodegree </string>
-    <string name="notification_description">The Project 3 repository is downloaded</string>
-    <string name="notification_button">See changes</string>
+	<!-- APP -->
+	<string name="app_name">ND940C3-Project</string>
+	<string name="app_description">Download files from Internet</string>
+	<string name="action_settings">Settings</string>
 
-    <string name="notification_download_channel_id" translatable="false">notification_downloads_channel</string>
-    <string name="notification_download_channel_name" translatable="false">Downloads</string>
-    <string name="notification_download_id" translatable="false">notification_download</string>
+	<!-- NOTIFICATIONS -->
+	<string name="notification_title">Udacity: Android Kotlin Nanodegree </string>
+	<string name="notification_description">The Project 3 repository is downloaded</string>
+	<string name="notification_button">Check the status</string>
 
-    <string name="intent_success" translatable="false">success</string>
-    <string name="intent_file_title" translatable="false">file_title</string>
-    <string name="intent_notification_id" translatable="false">notification_id</string>
+	<string name="notification_download_channel_id" translatable="false">notification_downloads_channel</string>
+	<string name="notification_download_channel_name" translatable="false">Downloads</string>
+	<string name="notification_download_id" translatable="false">notification_download</string>
 
-    <string name="button_name">Download</string>
-    <string name="button_loading">We are loading </string>
+	<string name="intent_success" translatable="false">success</string>
+	<string name="intent_file_title" translatable="false">file_title</string>
+	<string name="intent_notification_id" translatable="false">notification_id</string>
 
-    <string name="select_file_error">Please select the file to download</string>
+	<!-- MAIN ACTIVITY -->
+	<string name="button_download_text">Download</string>
+	<string name="button_download_loading_text">We are loading</string>
 
-    <string name="title_activity_detail">DetailActivity</string>
+	<string name="option_glide">Glide - Image Loading Library by BumpTech</string>
+	<string name="option_project">LoadApp - Current repository by Udacity</string>
+	<string name="option_retrofit">Retrofit - Type-safe HTTP client for Android and Java  by Square, Inc</string>
 
-    <string name="radio_glide">Glide - Image Loading Library by BumpTech</string>
-    <string name="radio_project">LoadApp - Current repository by Udacity</string>
-    <string name="radio_retrofit">Retrofit - Type-safe HTTP client for Android and Java  by Square, Inc</string>
+	<string name="select_file_error">Please select the file to download</string>
+
+	<!-- DETAIL ACTIVITY -->
+	<string name="title_activity_detail">DetailActivity</string>
+	<string name="file_name_label">File name:</string>
+	<string name="status_label">Status:</string>
+	<string name="button_ok_text">OK</string>
+
+	<string name="status_success">Success</string>
+	<string name="status_fail">Fail</string>
+
 </resources>
