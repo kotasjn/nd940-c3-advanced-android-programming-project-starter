@@ -4,10 +4,11 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:context=".DetailActivity">
 
-	<androidx.constraintlayout.widget.ConstraintLayout
+	<androidx.constraintlayout.motion.widget.MotionLayout
 		android:id="@+id/layout"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		android:layout_height="match_parent"
+		app:layoutDescription="@xml/activity_detail_scene">
 
 		<com.google.android.material.appbar.AppBarLayout
 			android:id="@+id/appBarLayout"
@@ -27,76 +28,42 @@
 
 		</com.google.android.material.appbar.AppBarLayout>
 
-
-		<Button
-			android:id="@+id/button"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_margin="@dimen/space_16dp"
-			android:background="@color/colorAccent"
-			android:text="@string/button_ok_text"
-			android:textColor="@color/white"
-			android:textSize="@dimen/default_text_size"
-			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintStart_toStartOf="parent" />
-
 		<TextView
 			android:id="@+id/file_name_label"
 			style="@style/labelText"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="@dimen/space_16dp"
-			android:layout_marginEnd="@dimen/space_8dp"
-			android:text="@string/file_name_label"
-			app:layout_constraintEnd_toStartOf="@+id/file_name_value"
-			app:layout_constraintHorizontal_bias="0.5"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="@+id/file_name_value" />
-
-		<TextView
-			android:id="@+id/status_label"
-			style="@style/labelText"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_marginStart="@dimen/space_16dp"
-			android:layout_marginEnd="@dimen/space_8dp"
-			android:text="@string/status_label"
-			app:layout_constraintEnd_toStartOf="@+id/status_value"
-			app:layout_constraintHorizontal_bias="0.5"
-			app:layout_constraintStart_toStartOf="parent"
-			app:layout_constraintTop_toTopOf="@+id/status_value" />
+			android:text="@string/file_name_label" />
 
 		<TextView
 			android:id="@+id/file_name_value"
 			style="@style/labelText"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="@dimen/space_8dp"
-			android:layout_marginTop="@dimen/space_16dp"
-			android:layout_marginEnd="@dimen/space_16dp"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintHorizontal_bias="0.5"
-			app:layout_constraintStart_toEndOf="@+id/file_name_label"
-			app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-			tools:text="LoadApp - Current repository by Udacity"
-			tools:textColor="@color/success" />
+			android:textColor="@color/success" />
+
+		<TextView
+			android:id="@+id/status_label"
+			style="@style/labelText"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:text="@string/status_label" />
 
 		<TextView
 			android:id="@+id/status_value"
 			style="@style/labelText"
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
-			android:layout_marginStart="@dimen/space_8dp"
-			android:layout_marginTop="@dimen/space_16dp"
-			android:layout_marginEnd="@dimen/space_16dp"
-			app:layout_constraintEnd_toEndOf="parent"
-			app:layout_constraintHorizontal_bias="0.5"
-			app:layout_constraintStart_toEndOf="@+id/status_label"
-			app:layout_constraintTop_toBottomOf="@+id/file_name_value"
 			tools:text="Fail"
 			tools:textColor="@color/failure" />
 
-	</androidx.constraintlayout.widget.ConstraintLayout>
+		<androidx.appcompat.widget.AppCompatButton
+			android:id="@+id/button_ok"
+			style="@style/button"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:text="@string/button_ok_text" />
+
+	</androidx.constraintlayout.motion.widget.MotionLayout>
 
 </layout>

@@ -1,6 +1,7 @@
 package com.udacity
 
 import android.app.NotificationManager
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -31,6 +32,12 @@ class DetailActivity : AppCompatActivity() {
 
             val notificationId = intent.getIntExtra(getString(R.string.intent_notification_id), 0)
             getSystemService(NotificationManager::class.java).cancel(notificationId)
+        }
+
+        binding.buttonOk.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
         }
     }
 }
